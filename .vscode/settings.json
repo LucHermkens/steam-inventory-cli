@@ -1,0 +1,41 @@
+{
+    // Formatting
+    "editor.formatOnSave": true,
+    "prettier.enable": false,
+    "eslint.enable": false,
+    "xo.enable": false,
+    "xo.format.enable": false,
+    "biome.enabled": true,
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.quickSuggestions": {
+        "strings": "on"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.biome": "explicit",
+        "source.organizeImports.biome": "explicit"
+    },
+    // File associations
+    "files.associations": {
+        "*.env*": "env"
+    },
+    // File nesting
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        "package.json": "bun.lock",
+        "*.ts": "${capture}.d.ts, ${capture}.mock.ts, ${capture}.test.ts"
+    },
+    // Fooxly Workspace support
+    "files.exclude": {
+        ".cursor": false,
+        ".vscode": false,
+        "cache": false,
+        "node_modules": false,
+        ".editorconfig": false,
+        ".gitignore": false,
+        "biome-all.jsonc": false,
+        "biome.jsonc": false,
+        "bun.lock": false,
+        "tsconfig.json": false
+    }
+}

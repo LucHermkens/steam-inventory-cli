@@ -1,0 +1,26 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
+    "linter": {
+        "rules": {
+            "recommended": true,
+            "a11y": "on",
+            "complexity": "on",
+            "correctness": "on",
+            "nursery": "on",
+            "performance": "error",
+            "security": "error",
+            "style": "on",
+            "suspicious": "on"
+        },
+        "domains": {
+            "react": "all",
+            "test": "all",
+            "solid": "none",
+            "next": "none",
+            "qwik": "none",
+            "vue": "none",
+            "project": "all",
+            "tailwind": "all"
+        }
+    }
+}

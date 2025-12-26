@@ -1,0 +1,125 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
+    "extends": ["biome-all.jsonc"],
+    "vcs": {
+        "enabled": false,
+        "clientKind": "git"
+    },
+    "files": {
+        "includes": ["src/**", "**/*.jsonc", "**/*.json", "!cache"]
+    },
+    "formatter": {
+        "useEditorconfig": true,
+        "lineWidth": 110
+    },
+    "html": {
+        "formatter": {
+            "enabled": true
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": true
+        },
+        "parser": {
+            "tailwindDirectives": true
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "jsxQuoteStyle": "single",
+            "quoteStyle": "single"
+        }
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": {
+                    "level": "on",
+                    "options": {
+                        // URL imports
+                        // Bun/Node imports
+                        // Packages
+                        //
+                        // Alias paths (e.g. ~/components)
+                        //
+                        // Relative paths (e.g. ./button)
+                        "groups": [
+                            ":URL:",
+                            ":BUN:",
+                            ":NODE:",
+                            ":PACKAGE:",
+                            ":PACKAGE_WITH_PROTOCOL:",
+                            ":BLANK_LINE:",
+                            ":ALIAS:",
+                            ":BLANK_LINE:",
+                            ":PATH:"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "linter": {
+        "rules": {
+            "complexity": {
+                "noExcessiveCognitiveComplexity": "off", // allow more complex functions
+                "noExcessiveLinesPerFunction": "off", // allow more complex functions
+                "noImplicitCoercions": "off" // allow !! instead of Boolean (also works as a type guard)
+            },
+            "correctness": {
+                "noNodejsModules": "off", // not relevant in scripts ========================================= should only apply to this project DON'T COPY
+                "noUndeclaredDependencies": "off", // allow usage of types from sub-dependencies
+                "useImportExtensions": "off", // not required with our tsconfig
+                "useUniqueElementIds": "off" // allow static element ids
+            },
+            "nursery": {
+                "noImportCycles": "off", // allow import cycles ============================================== should only apply to this project DON'T COPY
+                "noJsxLiterals": "off", // allow text in JSX
+                "noShadow": "off", // allow better readability and shorter variable names
+                "noContinue": "off", // allow `continue` in for-loops
+                "noUnresolvedImports": "off", // only let TypeScript validate imports
+                "useExplicitType": "off", // allow inferred types
+                // "useQwikValidLexicalScope": "off", // ======================================================== should be disabled on qwik domain level in biome-all config, hopefully gets fixed in the future
+                "useSortedClasses": {
+                    // sort tailwind classes alphabetically, also in utility functions
+                    "level": "warn",
+                    "fix": "safe",
+                    "options": {
+                        "attributes": ["class", "className"],
+                        "functions": ["cn", "cva"]
+                    }
+                }
+            },
+            "performance": {
+                "noAwaitInLoops": "off", // allow `await` in for-of loops
+                "noBarrelFile": "off", // allows cleaner code (use of export *)
+                "noReExportAll": "off" // allows cleaner code (use of export *)
+            },
+            "security": {
+                "noSecrets": "off" // this triggers too often on id's etc.
+            },
+            "style": {
+                "noEnum": "off", // allows enums
+                "noImplicitBoolean": "off", // allows cleaner code (no `={true}` in JSX)
+                "noMagicNumbers": "off", // allow numbers without a clear purpose (e.g. x 100 for percentage)
+                "useBlockStatements": "off", // allows cleaner code (e.g. one-liner if-statements)
+                "useExportsLast": "off", // allow any order of exporting
+                "useNamingConvention": "off", // allow any certain keys not to be camelCase (e.g. request body)
+                "useComponentExportOnlyModules": "off", // allow local-only components
+                "useFilenamingConvention": {
+                    // enforce kebab-case for all file names
+                    "level": "warn",
+                    "options": {
+                        "filenameCases": ["kebab-case"]
+                    }
+                }
+            },
+            "suspicious": {
+                "noConsole": "off", // stripped in production
+                "noEmptyBlockStatements": "off", // allow empty catch blocks
+                "noMisplacedAssertion": "off" // allow testing utils with expectations
+            }
+        }
+    }
+}
