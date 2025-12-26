@@ -173,9 +173,14 @@ switch (argv[2]) {
             for (const item of sellableInventory) {
                 if (!item.price) continue;
 
-                const sellPrice = Math.round(
-                    ((item.price > 0.3 ? item.price * 1.1 : item.price + 0.01) * 100) / 1.15,
-                );
+                let rawSellPrice = item.price + 0.01;
+                if (item.price > 0.3) {
+                    rawSellPrice = item.price * 1.1;
+                } else if (item.price > 1) {
+                    rawSellPrice = item.price * 1.05;
+                }
+
+                const sellPrice = Math.round((rawSellPrice * 100) / 1.15);
                 const response = await fetch('https://steamcommunity.com/market/sellitem/', {
                     method: 'POST',
                     headers: {
