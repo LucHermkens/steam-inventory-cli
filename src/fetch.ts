@@ -1,5 +1,12 @@
 import { file, hash, sleep } from 'bun';
-import { readdir } from 'node:fs/promises';
+import { mkdir, readdir, stat } from 'node:fs/promises';
+
+// Ensure the 'cache' directory exists, or create it
+try {
+    await stat('cache');
+} catch {
+    await mkdir('cache');
+}
 
 // Clean up old cache files (older than 1 hour)
 const cacheFiles = await readdir('cache');
