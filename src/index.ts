@@ -245,33 +245,38 @@ switch (argv[2]) {
                 await sleep(5000);
             }
 
-            console.log(`Success: ${success.length}, Failed: ${failed.length}`);
-            console.table(
-                success
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((item) => ({
-                        id: item.id,
-                        name: item.name,
-                        price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
-                        'sell price': item.sellPrice
-                            ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
-                            : 'N/A',
-                    })),
-                ['id', 'name', 'price', 'sell price'],
-            );
-            console.table(
-                failed
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((item) => ({
-                        id: item.id,
-                        name: item.name,
-                        price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
-                        'sell price': item.sellPrice
-                            ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
-                            : 'N/A',
-                    })),
-                ['id', 'name', 'price', 'sell price'],
-            );
+            if (success.length > 0) {
+                console.log(`Success: ${success.length}`);
+                console.table(
+                    success
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((item) => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                            'sell price': item.sellPrice
+                                ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
+                                : 'N/A',
+                        })),
+                    ['id', 'name', 'price', 'sell price'],
+                );
+            }
+            if (failed.length > 0) {
+                console.log(`Failed: ${failed.length}`);
+                console.table(
+                    failed
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((item) => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                            'sell price': item.sellPrice
+                                ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
+                                : 'N/A',
+                        })),
+                    ['id', 'name', 'price', 'sell price'],
+                );
+            }
         }
         break;
     }
