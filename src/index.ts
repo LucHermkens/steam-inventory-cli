@@ -16,6 +16,18 @@ import {
 
 type Item = InventoryAsset & InventoryAssetDescription & { descriptionid: string };
 
+function calculateSellPrice(price: number): number {
+    let rawSellPrice = price + 0.01;
+    if (price > 0.3) {
+        rawSellPrice = price * 1.1;
+    } else if (price > 1) {
+        rawSellPrice = price * 1.05;
+    }
+
+    return Math.round((rawSellPrice * 100) / 1.15);
+}
+
+// TODO: more logging on waiting times
 switch (argv[2]) {
     case 'inventory': {
         const rawInventory = await grabInventory(STEAM_PROFILE_ID);
@@ -59,28 +71,48 @@ switch (argv[2]) {
 
                 stickersData.push({
                     name: selling,
-                    price: price ? `€ ${price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                    price: price ? `€ ${price.toFixed(2).padStart(5, ' ')}` : '-',
                     inventory: inventory.filter((item) => item.name === selling).length,
                     inventoryWorth: inventoryWorth
-                        ? `€ ${inventoryWorth.toFixed(2).padStart(5, ' ')}`
-                        : 'N/A',
+                        ? `€ ${(calculateSellPrice(inventoryWorth) / 100).toFixed(2).padStart(5, ' ')}`
+                        : '-',
                     marketable: inventory
                         .filter((item) => item.name === selling)
                         .filter((item) => item.marketable === 1).length,
                     marketableWorth: marketableWorth
-                        ? `€ ${marketableWorth.toFixed(2).padStart(5, ' ')}`
-                        : 'N/A',
+                        ? `€ ${(calculateSellPrice(marketableWorth) / 100).toFixed(2).padStart(5, ' ')}`
+                        : '-',
                 });
             }
 
             const filteredInventory = inventory.filter((item) => ITEMS_TO_SELL.includes(item.name));
             const sellableInventory = filteredInventory.filter((item) => item.marketable === 1);
+
+            const inventoryTotalPrice = stickersData
+                .reduce((acc, item) => {
+                    const val = Number.parseFloat(item.inventoryWorth.replace('€ ', ''));
+                    return acc + (Number.isNaN(val) ? 0 : val);
+                }, 0)
+                .toFixed(2)
+                .padStart(5, ' ');
+
+            const marketableTotalPrice = stickersData
+                .reduce((acc, item) => {
+                    const val = Number.parseFloat(item.marketableWorth.replace('€ ', ''));
+                    return acc + (Number.isNaN(val) ? 0 : val);
+                }, 0)
+                .toFixed(2)
+                .padStart(5, ' ');
+
             console.table([
                 ...stickersData
                     .sort((a, b) => b.marketableWorth.localeCompare(a.marketableWorth))
                     .map((item) => ({
                         name: item.name,
-                        price: item.price,
+                        market: item.price,
+                        sell: `€ ${(calculateSellPrice(Number.parseFloat(item.price.replace('€ ', ''))) / 100)
+                            .toFixed(2)
+                            .padStart(5, ' ')}`,
                         inventory: item.inventory,
                         total: `€ ${item.inventoryWorth.replace('€ ', '').padStart(5, ' ')}`,
                         marketable: item.marketable,
@@ -88,28 +120,19 @@ switch (argv[2]) {
                     })),
                 {
                     name: ''.padStart(Math.max(...ITEMS_TO_SELL.map((item) => item.length)), '-'),
+                    market: '-------',
+                    sell: '-------',
+                    inventory: '---------',
+                    total: '-------',
+                    marketable: '----------',
+                    'total ': '-------',
                 },
                 {
-                    name: 'Total (inventory)',
+                    name: 'Total (Sell price, what you get)',
                     inventory: filteredInventory.length,
-                    total: `€ ${stickersData
-                        .reduce((acc, item) => {
-                            const val = Number.parseFloat(item.inventoryWorth.replace('€ ', ''));
-                            return acc + (Number.isNaN(val) ? 0 : val);
-                        }, 0)
-                        .toFixed(2)
-                        .padStart(5, ' ')}`,
-                },
-                {
-                    name: 'Total (marketable)',
                     marketable: sellableInventory.length,
-                    'total ': `€ ${stickersData
-                        .reduce((acc, item) => {
-                            const val = Number.parseFloat(item.marketableWorth.replace('€ ', ''));
-                            return acc + (Number.isNaN(val) ? 0 : val);
-                        }, 0)
-                        .toFixed(2)
-                        .padStart(5, ' ')}`,
+                    total: `€ ${inventoryTotalPrice.trim() ? inventoryTotalPrice : '-'}`,
+                    'total ': `€ ${marketableTotalPrice.trim() ? marketableTotalPrice : '-'}`,
                 },
             ]);
         } else {
@@ -173,14 +196,7 @@ switch (argv[2]) {
             for (const item of sellableInventory) {
                 if (!item.price) continue;
 
-                let rawSellPrice = item.price + 0.01;
-                if (item.price > 0.3) {
-                    rawSellPrice = item.price * 1.1;
-                } else if (item.price > 1) {
-                    rawSellPrice = item.price * 1.05;
-                }
-
-                const sellPrice = Math.round((rawSellPrice * 100) / 1.15);
+                const sellPrice = calculateSellPrice(item.price);
                 const response = await fetch('https://steamcommunity.com/market/sellitem/', {
                     method: 'POST',
                     headers: {
