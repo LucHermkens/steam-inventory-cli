@@ -4,8 +4,9 @@
     "packageManager": "bun@1.3.2",
     "scripts": {
         "dev": "bun run --watch src/index.ts",
-        "build:windows": "bun build --compile --target=bun-windows-x64 src/index.ts --outfile dist/steam-inventory-cli.exe",
-        "build:linux": "bun build --compile --target=bun-linux-x64 src/index.ts --outfile dist/steam-inventory-cli",
+        "build:base": "bun build --compile --minify --compile-autoload-dotenv src/index.ts",
+        "build:windows": "bun run build:base --target=bun-windows-x64 --outfile dist/steam-inventory-cli.exe",
+        "build:linux": "bun run build:base --target=bun-linux-x64 --outfile dist/steam-inventory-cli",
         "build": "bun run build:windows && bun run build:linux",
         "start": "bun run src/index.ts",
         "lint": "biome check",
