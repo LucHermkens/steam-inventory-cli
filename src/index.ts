@@ -141,17 +141,20 @@ switch (argv[2]) {
         break;
     }
     case 'prices': {
-        const prices: Array<{ name: string; price: string }> = [];
+        const prices: Array<{ name: string; price: string; 'sell price': string }> = [];
         for (const item of ITEMS_TO_SELL) {
             const price = await grabPrice(item);
             prices.push({
                 name: item,
-                price: price ? `€ ${price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                price: price ? `€ ${price.toFixed(2).padStart(8, ' ')}` : '-',
+                'sell price': price
+                    ? `€ ${(calculateSellPrice(price) / 100).toFixed(2).padStart(8, ' ')}`
+                    : '-',
             });
         }
         console.table(
             prices.sort((a, b) => b.price.localeCompare(a.price)),
-            ['name', 'price'],
+            ['name', 'price', 'sell price'],
         );
         break;
     }
@@ -253,10 +256,10 @@ switch (argv[2]) {
                         .map((item) => ({
                             id: item.id,
                             name: item.name,
-                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : '-',
                             'sell price': item.sellPrice
                                 ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
-                                : 'N/A',
+                                : '-',
                         })),
                     ['id', 'name', 'price', 'sell price'],
                 );
@@ -269,10 +272,10 @@ switch (argv[2]) {
                         .map((item) => ({
                             id: item.id,
                             name: item.name,
-                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : 'N/A',
+                            price: item.price ? `€ ${item.price.toFixed(2).padStart(5, ' ')}` : '-',
                             'sell price': item.sellPrice
                                 ? `€ ${(Math.round(item.sellPrice * 1.15) / 100).toFixed(2).padStart(5, ' ')}`
-                                : 'N/A',
+                                : '-',
                         })),
                     ['id', 'name', 'price', 'sell price'],
                 );

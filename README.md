@@ -84,41 +84,41 @@ bun start sell
 
 - `prices`
 
-   Shows the prices of `ITEMS_TO_SELL` (from [config.ts](config.ts)) in your inventory.
+   Shows the current market prices of `ITEMS_TO_SELL` (from [config.ts](config.ts)).
 
    *Example output:*
 
    ```text
-   ┌────┬─────────────────────────────────────┬─────────┐
-   │    │ name                                │ price   │
-   ├────┼─────────────────────────────────────┼─────────┤
-   │  0 │ Sticker | Ruby Wave (Lenticular)    │ € 12.28 │
-   │  1 │ Sticker | Ruby Stream (Lenticular)  │ €  7.40 │
-   │  2 │ Sticker | Winding Scorch (Foil)     │ €  4.29 │
-   │  3 │ Sticker | Bolt Charge (Foil)        │ €  4.19 │
-   │  4 │ Sticker | Bolt Strike (Foil)        │ €  2.55 │
-   │  5 │ Sticker | Rainbow Route (Holo)      │ €  1.79 │
-   │  6 │ Sticker | Bolt Energy (Foil)        │ €  1.56 │
-   │  7 │ Sticker | High Heat                 │ €  0.93 │
-   │  8 │ Sticker | Bolt Charge               │ €  0.38 │
-   │  9 │ Sticker | Boom Trail (Glitter)      │ €  0.35 │
-   │ 10 │ Sticker | Winding Scorch            │ €  0.26 │
-   │ 11 │ Sticker | Hydro Wave                │ €  0.26 │
-   │ 12 │ Sticker | Scorch Loop               │ €  0.20 │
-   │ 13 │ Sticker | Boom Detonation (Glitter) │ €  0.19 │
-   │ 14 │ Sticker | Bolt Strike               │ €  0.18 │
-   │ 15 │ Sticker | Boom Blast (Glitter)      │ €  0.17 │
-   │ 16 │ Sticker | Scorch Loop (Reverse)     │ €  0.17 │
-   │ 17 │ Sticker | Hydro Stream              │ €  0.15 │
-   │ 18 │ Sticker | Boom Epicenter (Glitter)  │ €  0.14 │
-   │ 19 │ Sticker | Hot Rod Heat              │ €  0.12 │
-   │ 20 │ Sticker | Boom Trail                │ €  0.11 │
-   │ 21 │ Sticker | Bolt Energy               │ €  0.08 │
-   │ 22 │ Sticker | Hydro Geyser              │ €  0.08 │
-   │ 23 │ Sticker | Boom Epicenter            │ €  0.05 │
-   │ 24 │ Sticker | Boom Detonation           │ €  0.05 │
-   │ 25 │ Sticker | Boom Blast                │ €  0.05 │
-   └────┴─────────────────────────────────────┴─────────┘
+   ┌────┬─────────────────────────────────────┬────────────┬────────────┐
+   │    │ name                                │ price      │ sell price │
+   ├────┼─────────────────────────────────────┼────────────┼────────────┤
+   │  0 │ Sticker | Ruby Wave (Lenticular)    │ €    12.28 │ €    11.75 │
+   │  1 │ Sticker | Ruby Stream (Lenticular)  │ €     7.42 │ €     7.10 │
+   │  2 │ Sticker | Winding Scorch (Foil)     │ €     4.37 │ €     4.18 │
+   │  3 │ Sticker | Bolt Charge (Foil)        │ €     4.19 │ €     4.01 │
+   │  4 │ Sticker | Bolt Strike (Foil)        │ €     2.57 │ €     2.46 │
+   │  5 │ Sticker | Rainbow Route (Holo)      │ €     1.80 │ €     1.72 │
+   │  6 │ Sticker | Bolt Energy (Foil)        │ €     1.56 │ €     1.49 │
+   │  7 │ Sticker | High Heat                 │ €     0.95 │ €     0.91 │
+   │  8 │ Sticker | Bolt Charge               │ €     0.39 │ €     0.37 │
+   │  9 │ Sticker | Boom Trail (Glitter)      │ €     0.35 │ €     0.33 │
+   │ 10 │ Sticker | Hydro Wave                │ €     0.27 │ €     0.24 │
+   │ 11 │ Sticker | Winding Scorch            │ €     0.26 │ €     0.23 │
+   │ 12 │ Sticker | Scorch Loop               │ €     0.20 │ €     0.18 │
+   │ 13 │ Sticker | Boom Detonation (Glitter) │ €     0.19 │ €     0.17 │
+   │ 14 │ Sticker | Bolt Strike               │ €     0.18 │ €     0.17 │
+   │ 15 │ Sticker | Boom Blast (Glitter)      │ €     0.17 │ €     0.16 │
+   │ 16 │ Sticker | Scorch Loop (Reverse)     │ €     0.17 │ €     0.16 │
+   │ 17 │ Sticker | Boom Epicenter (Glitter)  │ €     0.14 │ €     0.13 │
+   │ 18 │ Sticker | Hydro Stream              │ €     0.14 │ €     0.13 │
+   │ 19 │ Sticker | Hot Rod Heat              │ €     0.12 │ €     0.11 │
+   │ 20 │ Sticker | Boom Trail                │ €     0.11 │ €     0.10 │
+   │ 21 │ Sticker | Bolt Energy               │ €     0.08 │ €     0.08 │
+   │ 22 │ Sticker | Hydro Geyser              │ €     0.08 │ €     0.08 │
+   │ 23 │ Sticker | Boom Epicenter            │ €     0.05 │ €     0.05 │
+   │ 24 │ Sticker | Boom Detonation           │ €     0.05 │ €     0.05 │
+   │ 25 │ Sticker | Boom Blast                │ €     0.05 │ €     0.05 │
+   └────┴─────────────────────────────────────┴────────────┴────────────┘
    ```
 
 - `sell`
