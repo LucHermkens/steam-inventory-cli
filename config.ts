@@ -7,12 +7,13 @@ export const CURRENCY = SteamCurrency.EUR;
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0';
 export const STEAM_PROFILE_NAME = import.meta.env.STEAM_PROFILE_NAME!;
 export const STEAM_PROFILE_ID = import.meta.env.STEAM_PROFILE_ID!;
-export const COOKIE = import.meta.env.COOKIE!.startsWith('Cookie:')
-    ? import.meta.env.COOKIE!.replace(/^Cookie: ?/, '').trim()
-    : import.meta.env.COOKIE!.trim();
+export const COOKIE = import.meta.env.COOKIE?.startsWith('Cookie:')
+    ? import.meta.env.COOKIE.replace(/^Cookie: ?/, '').trim()
+    : import.meta.env.COOKIE?.trim()!;
 
 if (!(STEAM_PROFILE_NAME && STEAM_PROFILE_ID && COOKIE)) {
-    throw new Error('Missing environment variables');
+    console.error('Missing environment variables');
+    process.exit(1);
 }
 
 export const ITEMS_TO_SELL = [
