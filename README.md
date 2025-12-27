@@ -1,49 +1,83 @@
 # Steam Inventory CLI
 
-## Requirements
+A CLI tool to help you manage your Steam inventory, specifically for selling [Counter-Strike 2](https://store.steampowered.com/app/730/CounterStrike_2/) items on the Steam market.
 
-- [Bun](https://bun.sh)
+**Note:** This tool is still in development and may not work as expected, I will not provide support for it in any way.
+
+**Note:** This is only tested on Windows, not on Linux.
+
+## Table of contents
+
+- [Features](#features)
+- [Current selling strategy](#current-selling-strategy)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Development](#development)
+
+## Features
+
+- Inventory value overview
+- Item pricing overview
+- Bulk selling of items on the Steam market
+- Rate limiting protection
+- Caching of API responses
+
+## Current selling strategy
+
+Limited to items from the [Elemental Craft Stickers Collection](https://csgoskins.gg/collections/elemental-craft-stickers).
+
+If the price of an item is less than €0.30, it will be sold for €0.01 more.
+
+If the price of an item is between €0.30 and €1.00, it will be sold for 10% more.
+
+If the price of an item is greater than €1.00, it will be sold for 5% more.
+
+---
 
 ## Setup
 
-1. Clone the repository:
+1. Download the latest release from the [releases page](https://github.com/LucHermkens/steam-inventory-cli/releases) for your platform.
+
+2. Create a `.env` file next to the executable and populate it with the appropriate values based on [`.env.example`](.env.example).
+
+### Windows
+
+3. Run the `steam-inventory-cli.exe` executable from any terminal. See [Usage](#usage) for more information.
+
+### Linux
+
+3. Make sure the release file is executable:
 
    ```bash
-   git clone git@github.com:LucHermkens/steam-inventory-cli.git
-   cd steam-inventory-cli
+   chmod +x steam-inventory-cli
    ```
 
-2. Copy [`.env.example`](.env.example) to `.env` and populate it with the appropriate values:
+4. Run the `steam-inventory-cli` executable from any terminal. See [Usage](#usage) for more information.
 
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Install the project dependencies:
-
-   ```bash
-   bun install
-   ```
+---
 
 ## Usage
 
 To run the CLI:
 
-```bash
-bun start {command}
+```powershell
+.\steam-inventory-cli.exe {command}
 ```
+
+**Note:** In development, replace `.\steam-inventory-cli.exe` with `bun start` or `bun dev`.
 
 ### Example
 
-```bash
-bun start sell
+```powershell
+.\steam-inventory-cli.exe sell
 ```
 
-### Supported commands
+## Commands
 
 - `inventory`
 
-   Shows the amount and prices for `ITEMS_TO_SELL` (from [config.ts](config.ts)) in your inventory.
+   Shows the amount of items in your inventory and their market/sell pricing, limited to `ITEMS_TO_SELL` (from [config.ts](config.ts)).
 
    *Example output:*
 
@@ -123,7 +157,7 @@ bun start sell
 
 - `sell`
 
-   Sells the items in your inventory from `ITEMS_TO_SELL` (from [config.ts](config.ts)).
+   Sells the items in your inventory, limited to `ITEMS_TO_SELL` (from [config.ts](config.ts)).
 
    *Example output:*
 
@@ -153,4 +187,33 @@ bun start sell
    ├───┼─────────────┼────────────────────────────────┼─────────┼────────────┤
    │ 0 │ 48440****** │ Sticker | Rainbow Route (Holo) │ €  1.79 │ €  1.97    │
    └───┴─────────────┴────────────────────────────────┴─────────┴────────────┘
+   ```
+
+---
+
+## Development
+
+### Requirements
+
+- [Bun](https://bun.sh)
+
+### Steps
+
+1. Clone the repository:
+
+   ```bash
+   git clone git@github.com:LucHermkens/steam-inventory-cli.git
+   cd steam-inventory-cli
+   ```
+
+2. Copy [`.env.example`](.env.example) to `.env` and populate it with the appropriate values:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Install the project dependencies:
+
+   ```bash
+   bun install
    ```

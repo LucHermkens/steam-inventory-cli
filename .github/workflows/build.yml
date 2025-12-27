@@ -1,0 +1,139 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check version changed
+        id: version_check
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          current="$(jq -r '.version' package.json)"
+          if [ -z "${current}" ] || [ "${current}" = "null" ]; then
+            current="unknown"
+          fi
+
+          previous="unknown"
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            if git show HEAD~1:package.json >/dev/null 2>&1; then
+              previous="$(git show HEAD~1:package.json | jq -r '.version')"
+              if [ -z "${previous}" ] || [ "${previous}" = "null" ]; then
+                previous="unknown"
+              fi
+            fi
+          fi
+
+          changed="false"
+          if [ "${current}" != "${previous}" ]; then
+            changed="true"
+          fi
+
+          {
+            echo "current=${current}"
+            echo "previous=${previous}"
+            echo "changed=${changed}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Setup Bun environment
+        if: steps.version_check.outputs.changed == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .tool-versions
+
+      - name: Install dependencies
+        if: steps.version_check.outputs.changed == 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Build executables
+        if: steps.version_check.outputs.changed == 'true'
+        run: bun run build
+
+      - name: Prepare build artifacts
+        if: steps.version_check.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build-assets
+          if [ -d dist ]; then
+            cp dist/steam-inventory-cli.exe build-assets/ 2>/dev/null || true
+            cp dist/steam-inventory-cli build-assets/ 2>/dev/null || true
+            cp dist/steam-inventory-cli.app build-assets/ 2>/dev/null || true
+          fi
+
+      - name: Upload build artifacts
+        if: steps.version_check.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Executables
+          path: build-assets/
+
+      - name: Prepare release info
+        if: steps.version_check.outputs.changed == 'true'
+        id: rel
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION="$(jq -r '.version' package.json)"
+          if [ -z "${VERSION}" ] || [ "${VERSION}" = "null" ]; then
+            VERSION="unknown"
+          fi
+          NAME="$(jq -r '.name' package.json)"
+          if [ -z "${NAME}" ] || [ "${NAME}" = "null" ]; then
+            NAME="app"
+          fi
+          RELEASE_NAME="${NAME} ${VERSION}"
+
+          # If there are no tags yet, fall back to full history.
+          if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+            LAST_TAG="$(git describe --tags --abbrev=0)"
+            RANGE="${LAST_TAG}..HEAD"
+          else
+            LAST_TAG=""
+            RANGE="HEAD"
+          fi
+
+          {
+            echo "version=${VERSION}"
+            echo "tag_name=v${VERSION}"
+            echo "release_name=${RELEASE_NAME}"
+            echo "release_body<<__REL_BODY__"
+            echo ""
+            if [ -n "${LAST_TAG}" ]; then
+              echo "Commits since ${LAST_TAG}:"
+            else
+              echo "Commits:"
+            fi
+            git log "${RANGE}" --no-merges --pretty=format:'- %s (%h)' || true
+            echo ""
+            echo "__REL_BODY__"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.version_check.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.rel.outputs.tag_name }}
+          name: ${{ steps.rel.outputs.release_name }}
+          body: ${{ steps.rel.outputs.release_body }}
+          files: build-assets/*
